@@ -30,7 +30,7 @@ public class WalletController {
 
     @GetMapping("/{WALLET_UUID}")
     @ResponseStatus(HttpStatus.OK)
-    public WalletOperationResponse getBalance(@PathVariable("") UUID walletId) {
+    public WalletOperationResponse getBalance(@PathVariable UUID walletId) {
         log.info("==> GET. Получение кошелька для клиента с ID: {}", walletId);
         WalletOperationResponse receivedWallet = walletService.getBalance(walletId);
         log.info("<== GET. Получен кошелек для клиента с ID: {}", receivedWallet.walletId());

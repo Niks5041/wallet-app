@@ -23,15 +23,19 @@
     <changeSet author="nikson" id="2">
         <createIndex indexName="idx_wallet_walletId_unique" tableName="wallet">
             <column name="wallet_id"/>
-            <constraints unique="true"/>
         </createIndex>
+
+        <addUniqueConstraint
+                tableName="wallet"
+                columnNames="wallet_id"
+                constraintName="idx_wallet_walletId_unique"/>
     </changeSet>
 
-    <changeSet author="nikson" id="3">
-    <insert tableName="wallet">
-        <column name="walletId" value="uuid_generate_v4()"/>
-        <column name="amount" value="1000.0"/>
-    </insert>
-    </changeSet>
+<!--    <changeSet author="nikson" id="3">-->
+<!--        <insert tableName="wallet">-->
+<!--            <column name="wallet_id" value="uuid_generate_v4()"/>-->
+<!--            <column name="amount" value="1000.0"/>-->
+<!--        </insert>-->
+<!--    </changeSet>-->
 
 </databaseChangeLog>
