@@ -5,19 +5,21 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 
-@RestControllerAdvice
+@ControllerAdvice
 public class ErrorHandler {
 
     @ExceptionHandler(NotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ResponseBody
     public ErrorResponse handleNotFound(final NotFoundException e) {
         return new ErrorResponse(
                 "Not found error: ",
@@ -27,6 +29,7 @@ public class ErrorHandler {
 
     @ExceptionHandler(ValidationException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseBody
     public ErrorResponse handleValidation(final ValidationException e) {
         return new ErrorResponse(
                 "Validation error: ",
@@ -36,6 +39,7 @@ public class ErrorHandler {
 
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    @ResponseBody
     public ErrorResponse handleServerError(final Exception e) {
         return new ErrorResponse(
                 "error: ",
@@ -43,18 +47,9 @@ public class ErrorHandler {
         );
     }
 
-//    @ExceptionHandler(ConstraintViolationException.class)
-//    @ResponseStatus(HttpStatus.BAD_REQUEST)
-//    public ErrorResponse handleConstraintViolationException(ConstraintViolationException ex) {
-//        List<String> errors = new ArrayList<>();
-//        for (ConstraintViolation<?> violation : ex.getConstraintViolations()) {
-//            errors.add(violation.getMessage());
-//        }
-//        return new ErrorResponse("Validation failed", errors);
-//    }
-
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseBody
     public ErrorResponse handleMethodArgumentNotValidException(MethodArgumentNotValidException ex) {
         List<String> errors = ex.getBindingResult().getAllErrors().stream()
                 .map(error -> ((FieldError) error).getField() + ": " + error.getDefaultMessage())
@@ -64,6 +59,7 @@ public class ErrorHandler {
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseBody
     public ErrorResponse handleInvalidJson(HttpMessageNotReadableException e) {
         return new ErrorResponse("Invalid JSON format", e.getMessage());
     }

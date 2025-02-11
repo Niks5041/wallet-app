@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:mvc="http://www.springframework.org/schema/webmvc"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+                           http://www.springframework.org/schema/context
+                           http://www.springframework.org/schema/context/spring-context-3.2.xsd
+                           http://www.springframework.org/schema/jpa
+                           http://www.springframework.org/schema/jpa/spring-jpa-3.2.xsd
+                           http://www.springframework.org/schema/webmvc
+                           http://www.springframework.org/schema/webmvc/spring-webmvc-3.2.xsd">
+
+    <!-- Сканы компонентов -->
+    <context:component-scan base-package="ru.anikson.example.walletapp,
+     ru.anikson.example.walletapp.controller,
+      ru.anikson.example.walletapp.service,
+       ru.anikson.example.walletapp.dao"/>
+
+
+    <!-- JPA Конфигурация -->
+    <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+        <property name="driverClassName" value="org.postgresql.Driver"/>
+        <property name="url" value="jdbc:postgresql://postgres-wa:5432/wa"/>
+        <property name="username" value="wa"/>
+        <property name="password" value="wa"/>
+    </bean>
+
+    <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="packagesToScan" value="ru.anikson.example.walletapp.entity"/>
+        <property name="jpaVendorAdapter">
+            <bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter"/>
+        </property>
+    </bean>
+
+    <bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+        <property name="entityManagerFactory" ref="entityManagerFactory"/>
+    </bean>
+
+    <!-- Liquibase -->
+    <bean id="liquibase" class="liquibase.integration.spring.SpringLiquibase">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="shouldRun" value="true"/>
+        <property name="changeLog" value="classpath:db/changelog/db.changelog-master.xml"/>
+    </bean>
+
+    <!-- Включение MVC -->
+    <mvc:annotation-driven/>
+</beans>

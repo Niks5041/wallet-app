@@ -3,7 +3,7 @@ WORKDIR /app
 COPY . .
 RUN mvn clean package -DskipTests
 
-FROM tomcat:9-jdk17-openjdk
-COPY --from=build /app/target/*.war $CATALINA_HOME/webapps/ROOT.war
+FROM tomcat:10.1.31-jdk17
+COPY target/walletApp.war /usr/local/tomcat/webapps/
 EXPOSE 8080
 CMD ["catalina.sh", "run"]
